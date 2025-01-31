@@ -1,0 +1,200 @@
+{
+	"info": {
+		"_postman_id": "ad855e0e-a08b-4a09-bc2f-4748f859b291",
+		"name": "Spring Boilerplate",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19272687",
+		"_collection_link": "https://lively-shadow-659424.postman.co/workspace/My-Workspace~ac05cab6-f33f-4115-8bf1-d235baead4d6/collection/19272687-ad855e0e-a08b-4a09-bc2f-4748f859b291?action=share&source=collection_link&creator=19272687"
+	},
+	"item": [
+		{
+			"name": "Test",
+			"item": [
+				{
+					"name": "Test",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{http_host}}{{port}}{{version}}/test",
+							"host": [
+								"{{http_host}}{{port}}{{version}}"
+							],
+							"path": [
+								"test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test Moderator",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3YWh5dWJ1ZGkiLCJpYXQiOjE3MzgzMzQ3MDUsImV4cCI6MTczODQyMTEwNX0.DlOCOPU1gKrChVl6MmGYcgaXBUgOeXdn5weD7oTNbF8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "JSESSIONID=E22ECA90B2039A75D15F15111A440329"
+							}
+						],
+						"url": {
+							"raw": "{{http_host}}{{port}}{{version}}{{test}}/mod",
+							"host": [
+								"{{http_host}}{{port}}{{version}}{{test}}"
+							],
+							"path": [
+								"mod"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3YWh5dWJ1ZGkiLCJpYXQiOjE3MzgzMzQ3MDUsImV4cCI6MTczODQyMTEwNX0.DlOCOPU1gKrChVl6MmGYcgaXBUgOeXdn5weD7oTNbF8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "JSESSIONID=E22ECA90B2039A75D15F15111A440329"
+							}
+						],
+						"url": {
+							"raw": "{{http_host}}{{port}}{{version}}{{test}}/admin",
+							"host": [
+								"{{http_host}}{{port}}{{version}}{{test}}"
+							],
+							"path": [
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3YWh5dWJ1ZGkiLCJpYXQiOjE3MzgzMzQ3MDUsImV4cCI6MTczODQyMTEwNX0.DlOCOPU1gKrChVl6MmGYcgaXBUgOeXdn5weD7oTNbF8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "JSESSIONID=E22ECA90B2039A75D15F15111A440329"
+							}
+						],
+						"url": {
+							"raw": "{{http_host}}{{port}}{{version}}{{test}}/user",
+							"host": [
+								"{{http_host}}{{port}}{{version}}{{test}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"username\",\n    \"password\": \"@Password123\",\n    \"email\": \"username@gmail.com\",\n    \"phone\": \"85856178288\",\n    \"address\": \"Jakarta, Indonesia\",\n    \"firstname\": \"Lorem\",\n    \"lastname\": \"Ipsum Dolor\",\n    \"role\": [\n        \"admin\",\n        \"mod\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}{{port}}{{version}}{{auth}}/register",
+							"host": [
+								"{{http_host}}{{port}}{{version}}{{auth}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"username\",\n    \"password\": \"@Password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{http_host}}{{port}}{{version}}{{auth}}/login",
+							"host": [
+								"{{http_host}}{{port}}{{version}}{{auth}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
