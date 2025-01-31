@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: spring-boilerplate
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    jwt:
+      secret: HCOcTZV9domU4E2TqtR5RSgs07NwWn1WQVnYCeGQAxwquKFlRovLc/ukSQcY9r/K8fOPoEUf3bKL81kQEkSejA==
+      expiration: 86400000 # 24 hours
