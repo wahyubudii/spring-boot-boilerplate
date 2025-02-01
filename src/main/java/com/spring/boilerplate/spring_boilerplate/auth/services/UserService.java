@@ -11,8 +11,10 @@ import com.spring.boilerplate.spring_boilerplate.auth.models.repository.RoleRepo
 import com.spring.boilerplate.spring_boilerplate.auth.models.repository.UserRepository;
 import com.spring.boilerplate.spring_boilerplate.auth.security.jwt.JwtUtils;
 import com.spring.boilerplate.spring_boilerplate.auth.security.services.UserDetailsImpl;
+import com.spring.boilerplate.spring_boilerplate.exception.CustomException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,22 +39,22 @@ public class UserService {
 
     public RegisterResponseDto register(@Valid RegisterRequestDto registerRequestDto) {
         if (userRepository.existsByUsername(registerRequestDto.username())) {
-            throw new RuntimeException("Username already exist!");
+            throw new CustomException("Username already exist!", HttpStatus.CONFLICT);
         }
 
         if (userRepository.existsByEmail(registerRequestDto.email())) {
-            throw new RuntimeException("Email already exist!");
+            throw new CustomException("Email already exist!", HttpStatus.CONFLICT);
         }
 
         if (userRepository.existsByPhone(registerRequestDto.phone())) {
-            throw new RuntimeException("Phone already exist!");
+            throw new CustomException("Phone already exist!", HttpStatus.CONFLICT);
         }
 
         List<String> strRoles = registerRequestDto.role();
         List<Role> roles = new ArrayList<>();
 
         Role userRole = roleRepository.findByName(EnumUserRole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Role is not found!"));
+                .orElseThrow(() -> new CustomException("Role is not found!", HttpStatus.BAD_REQUEST));
 
         if (strRoles == null || strRoles.isEmpty()) {
             roles.add(userRole);
@@ -62,12 +64,12 @@ public class UserService {
                 switch (role.toLowerCase()) {
                     case "admin":
                         Role adminRole = roleRepository.findByName(EnumUserRole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Role is not found!"));
+                                .orElseThrow(() -> new CustomException("Role is not found!", HttpStatus.BAD_REQUEST));
                         roles.add(adminRole);
                         break;
                     case "mod":
                         Role modRole = roleRepository.findByName(EnumUserRole.ROLE_MODERATOR)
-                                .orElseThrow(() -> new RuntimeException("Role is not found!"));
+                                .orElseThrow(() -> new CustomException("Role is not found!", HttpStatus.BAD_REQUEST));
                         roles.add(modRole);
                         break;
                     default:
