@@ -1,3 +1,7 @@
+## Check API Documentation Swagger in your local
+Open in browser `http://localhost:<server-port>/swagger-ui/index.html` <br>
+server port value by default is: `8080`, but you can adjust in the `/application.yml` file
+
 ## Dependency
 – If you want to use PostgreSQL:
 ```xml
