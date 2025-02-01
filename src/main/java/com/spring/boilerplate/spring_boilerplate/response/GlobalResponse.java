@@ -30,6 +30,13 @@ public class GlobalResponse implements ResponseBodyAdvice<Object> {
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
 
+        String path = serverHttpRequest.getURI().getPath();
+
+        // Jika request menuju path Swagger atau OpenAPI, kembalikan body tanpa modifikasi
+        if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui") || path.startsWith("/swagger-resources")) {
+            return body;
+        }
+
         // Jika respons sudah berupa ResponseEntity, biarkan seperti itu
         if (body instanceof ResponseEntity) {
             return body;
