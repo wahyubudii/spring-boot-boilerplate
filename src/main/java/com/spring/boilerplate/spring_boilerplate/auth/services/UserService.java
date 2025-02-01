@@ -1,11 +1,14 @@
 package com.spring.boilerplate.spring_boilerplate.auth.services;
 
+import com.spring.boilerplate.spring_boilerplate.auth.dto.request.AuthoritiesRequestDto;
 import com.spring.boilerplate.spring_boilerplate.auth.dto.request.LoginRequestDto;
 import com.spring.boilerplate.spring_boilerplate.auth.dto.request.RegisterRequestDto;
+import com.spring.boilerplate.spring_boilerplate.auth.dto.response.DetailProfileDto;
 import com.spring.boilerplate.spring_boilerplate.auth.dto.response.LoginResponseDto;
 import com.spring.boilerplate.spring_boilerplate.auth.dto.response.RegisterResponseDto;
 import com.spring.boilerplate.spring_boilerplate.auth.enums.EnumUserRole;
 import com.spring.boilerplate.spring_boilerplate.auth.models.entity.Role;
+import com.spring.boilerplate.spring_boilerplate.auth.models.entity.User;
 import com.spring.boilerplate.spring_boilerplate.auth.models.mapper.AuthMapper;
 import com.spring.boilerplate.spring_boilerplate.auth.models.repository.RoleRepository;
 import com.spring.boilerplate.spring_boilerplate.auth.models.repository.UserRepository;
@@ -19,11 +22,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,7 +55,7 @@ public class UserService {
             throw new CustomException("Phone already exist!", HttpStatus.CONFLICT);
         }
 
-        List<String> strRoles = registerRequestDto.role();
+        List<String> strRoles = registerRequestDto.roles();
         List<Role> roles = new ArrayList<>();
 
         Role userRole = roleRepository.findByName(EnumUserRole.ROLE_USER)
@@ -88,7 +93,7 @@ public class UserService {
         return response;
     }
 
-    public LoginResponseDto signin(@Valid LoginRequestDto loginRequestDto) {
+    public LoginResponseDto login(@Valid LoginRequestDto loginRequestDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDto.username(), loginRequestDto.password()));
 
@@ -101,6 +106,61 @@ public class UserService {
                 .collect(Collectors.toList());
 
         var response = authMapper.loginResponse(userDetails, roles, jwt);
+
+        return response;
+    }
+
+    public DetailProfileDto authorities(@Valid String id, AuthoritiesRequestDto authoritiesRequestDto) {
+        if (authoritiesRequestDto.roles().contains("mod")) {
+            throw new CustomException("Role 'mod' is not allowed", HttpStatus.BAD_REQUEST);
+        }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new CustomException("User not found with id : " + id, HttpStatus.BAD_REQUEST));
+
+        List<String> strRoles = authoritiesRequestDto.roles();
+        List<Role> roles = new ArrayList<>();
+
+        Role userRole = roleRepository.findByName(EnumUserRole.ROLE_USER)
+                .orElseThrow(() -> new CustomException("Role is not found!", HttpStatus.BAD_REQUEST));
+
+        if (strRoles == null || strRoles.isEmpty()) {
+            roles.add(userRole);
+        } else {
+            roles.add(userRole);
+            for (String role : strRoles) {
+                switch (role.toLowerCase()) {
+                    case "admin":
+                        Role adminRole = roleRepository.findByName(EnumUserRole.ROLE_ADMIN)
+                                .orElseThrow(() -> new CustomException("Role is not found!", HttpStatus.BAD_REQUEST));
+                        roles.add(adminRole);
+                        break;
+                    case "mod":
+                        Role modRole = roleRepository.findByName(EnumUserRole.ROLE_MODERATOR)
+                                .orElseThrow(() -> new CustomException("Role is not found!", HttpStatus.BAD_REQUEST));
+                        roles.add(modRole);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        user.setRoles(roles);
+        userRepository.save(user);
+
+        var response = authMapper.profileResponse(user);
+
+        return response;
+    }
+
+    public DetailProfileDto profile() {
+        UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        User user = userRepository.findById(principal.getId())
+                .orElseThrow(() -> new CustomException("User not found!", HttpStatus.BAD_REQUEST));
+
+        var response = authMapper.profileResponse(user);
 
         return response;
     }

@@ -1,6 +1,7 @@
 package com.spring.boilerplate.spring_boilerplate.auth.models.mapper;
 
 import com.spring.boilerplate.spring_boilerplate.auth.dto.request.RegisterRequestDto;
+import com.spring.boilerplate.spring_boilerplate.auth.dto.response.DetailProfileDto;
 import com.spring.boilerplate.spring_boilerplate.auth.dto.response.LoginResponseDto;
 import com.spring.boilerplate.spring_boilerplate.auth.dto.response.RegisterResponseDto;
 import com.spring.boilerplate.spring_boilerplate.auth.models.entity.Role;
@@ -47,6 +48,19 @@ public class AuthMapper {
                 user.getEmail(),
                 roles,
                 jwt
+        );
+    }
+
+    public DetailProfileDto profileResponse(User user) {
+        return new DetailProfileDto(
+                user.getId(),
+                user.getUsername(),
+                user.getPassword(),
+                user.getPhone(),
+                user.getAddress(),
+                user.getFirstname(),
+                user.getLastname(),
+                user.getRoles()
         );
     }
 }

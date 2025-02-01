@@ -19,5 +19,5 @@ public record RegisterRequestDto(
         String firstname,
         @NotNull(message = "lastname is required")
         String lastname,
-        List<String> role
+        List<String> roles
 ) {}
